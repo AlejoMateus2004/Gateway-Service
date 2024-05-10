@@ -1,0 +1,32 @@
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      default-zone: http://localhost:8761/eureka
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway-service
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: training-microservice
+          uri: lb://training-microservice
+          predicates:
+            - Path=/training/**
+        - id: users-gym-service
+          uri: lb://users-gym-service
+          predicates:
+            - Path=/**
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
